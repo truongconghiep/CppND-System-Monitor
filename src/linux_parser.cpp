@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "linux_parser.h"
+// #include <iostream>
 
 using std::stof;
 using std::string;
@@ -38,12 +39,19 @@ string LinuxParser::Kernel() {
   string os, kernel;
   string line;
   std::ifstream stream(kProcDirectory + kVersionFilename);
-  if (stream.is_open()) {
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    linestream >> os >> kernel;
+
+  string name = "Linux version ";
+  while (std::getline(stream, line)) 
+  {
+    if (line.compare(0, name.size(), name) == 0) 
+    {
+      std::istringstream buf(line);
+      std::istream_iterator<std::string> beg(buf), end;
+      std::vector<std::string> values(beg, end);
+      return values[2];
+    }
   }
-  return kernel;
+  return "";
 }
 
 // BONUS: Update this to use std::filesystem
