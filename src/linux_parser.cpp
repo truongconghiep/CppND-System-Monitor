@@ -160,8 +160,10 @@ int LinuxParser::TotalProcesses()
   int result = 0;
   std::string name = "processes";
   std::ifstream stream(kProcDirectory + kStatFilename);
-  while (std::getline(stream, line)) {
-    if (line.compare(0, name.size(), name) == 0) {
+  while (std::getline(stream, line))
+  {
+    if (line.compare(0, name.size(), name) == 0) 
+    {
       std::istringstream buf(line);
       std::istream_iterator<std::string> beg(buf), end;
       std::vector<std::string> values(beg, end);
@@ -173,7 +175,25 @@ int LinuxParser::TotalProcesses()
 }
 
 // TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+int LinuxParser::RunningProcesses()
+{ 
+  std::string line;
+  int result = 0;
+  std::string name = "procs_running";
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  while (std::getline(stream, line)) 
+  {
+    if (line.compare(0, name.size(), name) == 0) 
+    {
+      std::istringstream buf(line);
+      std::istream_iterator<std::string> beg(buf), end;
+      std::vector<std::string> values(beg, end);
+      result += stoi(values[1]);
+      break;
+    }
+  }
+  return result;
+}
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
