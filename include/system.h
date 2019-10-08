@@ -25,6 +25,7 @@ class System {
   std::vector<Process> processes_ = {};
   std::string osName;
   std::string kernelVer;
+  float memPercent;
 };
 
 #endif

@@ -75,7 +75,46 @@ vector<int> LinuxParser::Pids() {
 }
 
 // TODO: Read and return the system memory utilization
-float LinuxParser::MemoryUtilization() { return 0.0; }
+float LinuxParser::MemoryUtilization() 
+{
+  string line;
+  string name1 = "MemAvailable:";
+  string name2 = "MemFree:";
+  string name3 = "Buffers:";
+
+  string value;
+  // int result;
+  std::ifstream stream(kProcDirectory + kMeminfoFilename);
+  float total_mem = 0;
+  float free_mem = 0;
+  float buffers = 0;
+  while (std::getline(stream, line))
+  {
+    if (total_mem != 0 && free_mem != 0) break;
+    if (line.compare(0, name1.size(), name1) == 0) 
+    {
+      std::istringstream buf(line);
+      std::istream_iterator<std::string> beg(buf), end;
+      std::vector<std::string> values(beg, end);
+      total_mem = stof(values[1]);
+    }
+    if (line.compare(0, name2.size(), name2) == 0) 
+    {
+      std::istringstream buf(line);
+      std::istream_iterator<std::string> beg(buf), end;
+      std::vector<std::string> values(beg, end);
+      free_mem = stof(values[1]);
+    }
+    if (line.compare(0, name3.size(), name3) == 0) {
+      std::istringstream buf(line);
+      std::istream_iterator<std::string> beg(buf), end;
+      std::vector<std::string> values(beg, end);
+      buffers = stof(values[1]);
+    }
+  }
+  // calculating usage:
+  return float(100.0 * (1 - (free_mem / (total_mem - buffers))));
+}
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() { return 0; }
