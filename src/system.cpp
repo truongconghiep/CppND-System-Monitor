@@ -15,13 +15,28 @@ using std::string;
 using std::vector;
 
 // TODO: Return the system's CPU
-Processor& System::Cpu() { return cpu_; }
+Processor& System::Cpu()
+{ 
+    return cpu_;
+}
 
 // TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { return processes_; }
+vector<Process>& System::Processes()
+{
+    this->refreshList();
+    for (unsigned int i = 0; i < 10; i++)
+    {
+        this->processes_[i].getProcess();
+    }
+    return processes_;
+    // return 0;
+}
 
 // TODO: Return the system's kernel identifier (string)
-std::string System::Kernel() { return this->kernelVer; }
+std::string System::Kernel()
+{ 
+    return this->kernelVer;
+}
 
 // TODO: Return the system's memory utilization
 float System::MemoryUtilization() 
@@ -59,4 +74,16 @@ System::System()
   */
   this->osName = LinuxParser::OperatingSystem();
   this->kernelVer = LinuxParser::Kernel();
+  this->refreshList();
+}
+
+void System::refreshList() 
+{
+  vector<int> pids = LinuxParser::Pids();
+  this->processes_.clear();
+  for (unsigned int i = pids.size() - 10; i < pids.size(); i++) 
+  {
+    Process proc(std::to_string(pids[i]));
+    this->processes_.push_back(proc);
+  }
 }

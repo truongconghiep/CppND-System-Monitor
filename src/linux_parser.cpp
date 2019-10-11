@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "linux_parser.h"
 // #include <iostream>
@@ -206,11 +207,68 @@ int LinuxParser::RunningProcesses()
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Command(int pid) 
+{ 
+  std::string line;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
+  std::getline(stream, line);
+  return line;
+}
+
+std::string LinuxParser::ProcessCpu(int pid)
+{
+  std::string line;
+  std::string value;
+  float result;
+  // ifstream stream =
+  //     Util::getStream((Path::basePath() + pid + "/" + Path::statPath()));
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + std::to_string(pid) + "/" + kStatFilename);
+  std::getline(stream, line);
+  std::string str = line;
+  std::istringstream buf(str);
+  std::istream_iterator<std::string> beg(buf), end;
+  std::vector<std::string> values(beg, end);  // done!
+  // acquiring relevant times for calculation of active occupation of CPU for
+  // selected process
+  float utime = LinuxParser::UpTime(pid);
+  float stime = stof(values[14]);
+  float cutime = stof(values[15]);
+  float cstime = stof(values[16]);
+  float starttime = stof(values[21]);
+  float uptime = LinuxParser::UpTime();
+  float freq = sysconf(_SC_CLK_TCK);
+  float total_time = utime + stime + cutime + cstime;
+  float seconds = uptime - (starttime / freq);
+  result = 100.0 * ((total_time / freq) / seconds);
+  return std::to_string(result);
+}
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Ram(int pid) 
+{ 
+  std::string line;
+  // Declaring search attribute for file
+  std::string name = "VmData";
+  std::string value;
+  float result;
+  // Opening stream for specific file
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+  while (std::getline(stream, line)) 
+  {
+    // Searching line by line
+    if (line.compare(0, name.size(), name) == 0) {
+      // slicing string line on ws for values using sstream
+      std::istringstream buf(line);
+      std::istream_iterator<string> beg(buf), end;
+      std::vector<std::string> values(beg, end);
+      // conversion kB -> GB
+      result = (stof(values[1]) / float(1024 * 1024));
+      break;
+    }
+  }
+  return std::to_string(result);
+}
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
@@ -218,8 +276,50 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::User(int pid) 
+{ 
+  std::string line;
+  std::string name = "Uid:";
+  std::string result = "";
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+  // Getting UID for user
+  while (std::getline(stream, line)) 
+  {
+    if (line.compare(0, name.size(), name) == 0) 
+    {
+      std::istringstream buf(line);
+      std::istream_iterator<std::string> beg(buf), end;
+      std::vector<std::string> values(beg, end);
+      result = values[1];
+      break;
+    }
+  }
+  std::ifstream stream1("/etc/passwd");
+  name = ("x:" + result);
+  // Searching for name of the user with selected UID
+  while (std::getline(stream1, line)) {
+    if (line.find(name) != std::string::npos) {
+      result = line.substr(0, line.find(":"));
+      return result;
+    }
+  }
+  return "";
+}
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+long LinuxParser::UpTime(int pid) 
+{
+  std::string line;
+  std::string value;
+  // float result;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + "/" + kStatFilename);
+  std::getline(stream, line);
+  std::string str = line;
+  std::istringstream buf(str);
+  std::istream_iterator<std::string> beg(buf), end;
+  std::vector<std::string> values(beg, end);  // done!
+  // Using sysconf to get clock ticks of the host machine
+
+  return stoi(values[13]);
+}
