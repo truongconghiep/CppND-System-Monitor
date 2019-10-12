@@ -22,8 +22,8 @@ int Process::Pid()
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() 
 { 
-    // return std::stof(this->cpu);
-    return 0;
+    return std::stof(this->cpu);
+    // return 0;
 }
 
 // TODO: Return the command that generated this process
@@ -66,6 +66,6 @@ void Process::getProcess()
 //   std::cout << this->up_time << std::endl;
   this->user = LinuxParser::User(std::stoi(this->pid));
 //   this->cmd = LinuxParser::Command(std::stoi(this->pid));
-//    this->cpu = LinuxParser::ProcessCpu(std::stoi(this->pid));
+   this->cpu = LinuxParser::ProcessCpu(std::stoi(this->pid));
 // std::cout << "test" << std::endl;
 }
