@@ -273,7 +273,7 @@ string LinuxParser::Ram(int pid)
       std::istream_iterator<string> beg(buf), end;
       std::vector<std::string> values(beg, end);
       // conversion kB -> GB
-      result = (stof(values[1]) / float(1024 * 1024));
+      result = (stof(values[1]) / float(1024));
       break;
     }
   }
@@ -319,6 +319,21 @@ string LinuxParser::User(int pid)
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 float LinuxParser::UpTime(int pid) 
+{
+  std::string line;
+  std::string value;
+  // float result;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  std::getline(stream, line);
+  std::string str = line;
+  std::istringstream buf(str);
+  std::istream_iterator<std::string> beg(buf), end;
+  std::vector<std::string> values(beg, end);  // done!
+  // Using sysconf to get clock ticks of the host machine
+  return (stof(values[21]) / sysconf(_SC_CLK_TCK));
+}
+
+float LinuxParser::StartTime(int pid) 
 {
   std::string line;
   std::string value;
