@@ -222,7 +222,7 @@ std::string LinuxParser::ProcessCpu(int pid)
   float result;
   // ifstream stream =
   //     Util::getStream((Path::basePath() + pid + "/" + Path::statPath()));
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + "/" + kStatFilename);
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
   std::getline(stream, line);
   std::string str = line;
   std::istringstream buf(str);
@@ -231,12 +231,13 @@ std::string LinuxParser::ProcessCpu(int pid)
   // acquiring relevant times for calculation of active occupation of CPU for
   // selected process
   float utime = LinuxParser::UpTime(pid);
+  // std::cout << "utime " << utime << "\r" << std::endl;
   float stime;
   float cutime;
   float cstime;
   float starttime;
 
-  if(values.size() > 21)
+  // if(values.size() > 21)
   {
     stime = stof(values[14]);
     cutime = stof(values[15]);
@@ -247,7 +248,8 @@ std::string LinuxParser::ProcessCpu(int pid)
   float freq = sysconf(_SC_CLK_TCK);
   float total_time = utime + stime + cutime + cstime;
   float seconds = uptime - (starttime / freq);
-  result = 100.0 * ((total_time / freq) / seconds);
+  result = ((total_time / freq) / seconds);
+  // std::cout << "result " << result << "\r" << std::endl; 
   return std::to_string(result);
 }
 
@@ -316,18 +318,18 @@ string LinuxParser::User(int pid)
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid) 
+float LinuxParser::UpTime(int pid) 
 {
   std::string line;
   std::string value;
   // float result;
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + "/" + kStatFilename);
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
   std::getline(stream, line);
   std::string str = line;
   std::istringstream buf(str);
   std::istream_iterator<std::string> beg(buf), end;
   std::vector<std::string> values(beg, end);  // done!
   // Using sysconf to get clock ticks of the host machine
-
-  return stoi(values[13]);
+  // std::cout << "value " << stof(values[13]) << std::endl; 
+  return (stof(values[13]) / sysconf(_SC_CLK_TCK));
 }

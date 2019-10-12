@@ -19,7 +19,7 @@ int Process::Pid()
 }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() 
+float Process::CpuUtilization()
 { 
     return std::stof(this->cpu);
 }
