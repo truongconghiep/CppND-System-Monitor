@@ -220,8 +220,6 @@ std::string LinuxParser::ProcessCpu(int pid)
   std::string line;
   std::string value;
   float result;
-  // ifstream stream =
-  //     Util::getStream((Path::basePath() + pid + "/" + Path::statPath()));
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
   std::getline(stream, line);
   std::string str = line;
@@ -231,25 +229,20 @@ std::string LinuxParser::ProcessCpu(int pid)
   // acquiring relevant times for calculation of active occupation of CPU for
   // selected process
   float utime = LinuxParser::UptimeForCpuUtil(pid);
-  // std::cout << "utime " << utime << "\r" << std::endl;
   float stime;
   float cutime;
   float cstime;
   float starttime;
 
-  // if(values.size() > 21)
-  {
-    stime = stof(values[14]);
-    cutime = stof(values[15]);
-    cstime = stof(values[16]);
-    starttime = stof(values[21]);
-  }
+  stime = stof(values[14]);
+  cutime = stof(values[15]);
+  cstime = stof(values[16]);
+  starttime = stof(values[21]);
   float uptime = LinuxParser::UpTime();
   float freq = sysconf(_SC_CLK_TCK);
   float total_time = utime + stime + cutime + cstime;
   float seconds = uptime - (starttime / freq);
   result = ((total_time / freq) / seconds);
-  // std::cout << "result " << result << "\r" << std::endl; 
   return std::to_string(result);
 }
 
