@@ -330,6 +330,5 @@ float LinuxParser::UpTime(int pid)
   std::istream_iterator<std::string> beg(buf), end;
   std::vector<std::string> values(beg, end);  // done!
   // Using sysconf to get clock ticks of the host machine
-  // std::cout << "value " << stof(values[13]) << std::endl; 
-  return (stof(values[13]) / sysconf(_SC_CLK_TCK));
+  return (stof(values[21]) / sysconf(_SC_CLK_TCK));
 }
