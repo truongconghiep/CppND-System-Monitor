@@ -231,11 +231,6 @@ std::string LinuxParser::ProcessCpu(int pid)
   // acquiring relevant times for calculation of active occupation of CPU for
   // selected process
   float utime = LinuxParser::UpTime(pid);
-  // std::cout << "value size " << values.size() << std::endl;
-  // for (int i = 0; i < values.size(); i++)
-  // {
-  //   std::cout << "value " << values[i] << std::endl;
-  // }
   float stime;
   float cutime;
   float cstime;

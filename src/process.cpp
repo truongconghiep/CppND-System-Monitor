@@ -36,8 +36,8 @@ string Process::Command()
 // TODO: Return this process's memory utilization
 string Process::Ram() 
 { 
-    // return this->mem; 
-    return 0;
+    return this->mem; 
+    // return 0;
 }
 
 // TODO: Return the user (name) that generated this process
@@ -61,7 +61,7 @@ bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
 
 void Process::getProcess()
 {
-  //this->mem = LinuxParser::Ram(std::stoi(this->pid));
+  this->mem = LinuxParser::Ram(std::stoi(this->pid));
   //this->up_time = std::to_string(LinuxParser::UpTime(std::stoi(this->pid)));
 //   std::cout << this->up_time << std::endl;
   this->user = LinuxParser::User(std::stoi(this->pid));
