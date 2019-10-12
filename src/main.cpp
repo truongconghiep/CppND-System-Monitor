@@ -4,6 +4,5 @@
 
 int main() {
   System system;
-  std::cout << "display process" << std::endl;
   NCursesDisplay::Display(system);
 }

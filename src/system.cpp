@@ -29,7 +29,6 @@ vector<Process>& System::Processes()
         this->processes_[i].getProcess();
     }
     return processes_;
-    // return 0;
 }
 
 // TODO: Return the system's kernel identifier (string)

@@ -16,42 +16,36 @@ using std::vector;
 int Process::Pid() 
 { 
     return std::stoi(this->pid);
-    // return 0;
 }
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() 
 { 
     return std::stof(this->cpu);
-    // return 0;
 }
 
 // TODO: Return the command that generated this process
 string Process::Command() 
 { 
-    // return this->cmd;
-    return 0;
+    return this->cmd;
 }
 
 // TODO: Return this process's memory utilization
 string Process::Ram() 
 { 
     return this->mem; 
-    // return 0;
 }
 
 // TODO: Return the user (name) that generated this process
 string Process::User() 
 { 
     return this->user;
-    // return 0;
 }
 
 // TODO: Return the age of this process (in seconds)
 long int Process::UpTime()
 { 
-    // return std::stoi(this->up_time);
-    return 0;
+    return std::stoi(this->up_time);
 }
 
 
@@ -62,10 +56,8 @@ bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
 void Process::getProcess()
 {
   this->mem = LinuxParser::Ram(std::stoi(this->pid));
-  //this->up_time = std::to_string(LinuxParser::UpTime(std::stoi(this->pid)));
-//   std::cout << this->up_time << std::endl;
+  this->up_time = std::to_string(LinuxParser::UpTime(std::stoi(this->pid)));
   this->user = LinuxParser::User(std::stoi(this->pid));
-//   this->cmd = LinuxParser::Command(std::stoi(this->pid));
-   this->cpu = LinuxParser::ProcessCpu(std::stoi(this->pid));
-// std::cout << "test" << std::endl;
+  this->cmd = LinuxParser::Command(std::stoi(this->pid));
+  this->cpu = LinuxParser::ProcessCpu(std::stoi(this->pid));
 }
