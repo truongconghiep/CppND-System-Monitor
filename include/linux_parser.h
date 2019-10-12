@@ -52,7 +52,7 @@ std::string Ram(int pid);
 std::string Uid(int pid);
 std::string User(int pid);
 float UpTime(int pid);
-float StartTime(int pid);
+float UptimeForCpuUtil(int pid);
 std::string ProcessCpu(int pid);
 };  // namespace LinuxParser
 

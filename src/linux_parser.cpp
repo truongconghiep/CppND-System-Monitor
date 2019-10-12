@@ -230,7 +230,7 @@ std::string LinuxParser::ProcessCpu(int pid)
   std::vector<std::string> values(beg, end);  // done!
   // acquiring relevant times for calculation of active occupation of CPU for
   // selected process
-  float utime = LinuxParser::UpTime(pid);
+  float utime = LinuxParser::UptimeForCpuUtil(pid);
   // std::cout << "utime " << utime << "\r" << std::endl;
   float stime;
   float cutime;
@@ -333,7 +333,7 @@ float LinuxParser::UpTime(int pid)
   return (stof(values[21]) / sysconf(_SC_CLK_TCK));
 }
 
-float LinuxParser::StartTime(int pid) 
+float LinuxParser::UptimeForCpuUtil(int pid) 
 {
   std::string line;
   std::string value;
@@ -345,5 +345,5 @@ float LinuxParser::StartTime(int pid)
   std::istream_iterator<std::string> beg(buf), end;
   std::vector<std::string> values(beg, end);  // done!
   // Using sysconf to get clock ticks of the host machine
-  return (stof(values[21]) / sysconf(_SC_CLK_TCK));
+  return (stof(values[13]) / sysconf(_SC_CLK_TCK));
 }
